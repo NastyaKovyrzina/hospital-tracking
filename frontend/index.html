@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекинг медицинского оборудования | Больница</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --bg-color: #f8fafc;
+            --card-color: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #map {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: calc(100vh - 120px);
+            position: relative;
+        }
+
+        #map img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .devices-list {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .device-marker {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            border: 2px solid white;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .device-marker:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            z-index: 10;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            #map, .devices-list {
+                height: auto;
+            }
+
+            #map {
+                height: 70vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-hospital-alt"></i> Трекинг медицинского оборудования</h1>
+
+        <!-- Блок с картой -->
+        <div id="map">
+            <img src="план_больницы.jpg" alt="План этажа больницы">
+            <!-- Маркеры будут добавляться через JS -->
+        </div>
+
+        <!-- Список устройств -->
+        <div class="devices-list">
+            <h2><i class="fas fa-list"></i> Список оборудования</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Кабинет</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody id="devices-table">
+                    <!-- Данные будут вставлены через JavaScript -->
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Загрузка данных...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Здесь будет код для отображения маркеров и обновления данных
+        document.addEventListener('DOMContentLoaded', function() {
+            // Пример маркера (будет заменено реальными данными)
+            const map = document.getElementById('map');
+            const marker = document.createElement('div');
+            marker.className = 'device-marker';
+            marker.style.left = '30%';
+            marker.style.top = '40%';
+            marker.title = 'Аппарат ИВЛ #123';
+            map.appendChild(marker);
+
+            // Пример данных для таблицы (будет заменено реальными данными)
+            const devices = [
+                { id: '123', name: 'Аппарат ИВЛ', room: '205', status: 'active' },
+                { id: '456', name: 'Кардиомонитор', room: '112', status: 'inactive' },
+                { id: '789', name: 'Дефибриллятор', room: 'Реанимация', status: 'active' }
+            ];
+
+            const tableBody = document.getElementById('devices-table');
+            tableBody.innerHTML = '';
+
+            devices.forEach(device => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${device.id}</td>
+                    <td>${device.name}</td>
+                    <td>${device.room}</td>
+                    <td><span class="status-badge status-${device.status}">
+                        ${device.status === 'active' ? 'Активен' : 'Неактивен'}
+                    </span></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>
