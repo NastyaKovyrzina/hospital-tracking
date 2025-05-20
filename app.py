@@ -22,11 +22,17 @@ with app.app_context():
     db.create_all()
 
 
-# API для трекера (единственная версия функции)
-@app.route('/api/position', methods=['POST'])
+
+@app.route('/api/position', methods=['GET', 'POST'])
 def update_position():
-    if not request.is_json:
-        return jsonify({"error": "Request must be JSON"}), 400
+    if request.method == 'POST':
+        data = request.json
+    else:  # Если GET
+        data = request.args
+
+    device_id = data.get('device_id')
+    lat = data.get('lat')
+    lon = data.get('lon')
 
     try:
         data = request.json
